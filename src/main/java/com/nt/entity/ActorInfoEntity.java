@@ -31,6 +31,9 @@ public class ActorInfoEntity {
 	@Column(length=10)
 	private String active_SW;
 	
+	
+	
+	
 	//meta data
 	@Column(length=30)
 	private String createdBy;

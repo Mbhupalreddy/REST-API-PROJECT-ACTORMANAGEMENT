@@ -2,7 +2,6 @@ package com.nt.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.lang.String;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,5 +62,60 @@ public class ActorInfoMgmtSericeImpl implements IActorInfoMgmtService {
 		
 		return listData;
 	}
-
+	
+	
+	@Override
+	public ActorData showActorById(int id) {
+	ActorInfoEntity entity	=actorRepo.findById(id)
+											.orElseThrow(()-> new IllegalArgumentException("id is not found!"));
+		ActorData data=new ActorData();
+		BeanUtils.copyProperties(entity, data);
+		return data;
+	}
+	
+	@Override
+	public String updateActorData(ActorData data) {
+		ActorInfoEntity entity = actorRepo.findById(data.getAid())
+				.orElseThrow(()->new IllegalArgumentException("id not found!"));
+		//copy ActorData to ActorInfo obj 
+		BeanUtils.copyProperties(data, entity);
+		entity.setUpdatedBy(osuser);
+		//update the entity obj
+		Integer idval = actorRepo.save(entity).getAid();
+		return  idval+"  ActorData is Updated!!";
+	}
+	
+	@Override
+	public String updateActorRemuneration(int id, double amount) {
+		ActorInfoEntity entity = actorRepo.findById(id)
+					.orElseThrow(()->new IllegalArgumentException("Id Not foundor iNvalid id"));
+		//modify the entity obj
+		entity.setRemuneration(amount);
+		//update the obj
+		Integer aid = actorRepo.save(entity).getAid();
+		
+		return aid+"  actor remunation is updated!!";
+	}
+	
+	@Override
+	public String updateActorStatus(int id, String status) {
+		ActorInfoEntity entity = actorRepo.findById(id)
+				.orElseThrow(()->new IllegalArgumentException("Id Not foundor iNvalid id"));
+		//modify entity obj
+		entity.setActive_SW(status);
+		//update the obj
+		Integer aid = actorRepo.save(entity).getAid();
+		return aid+"  actor Status is updated!!";
+	}
+	
+	@Override
+	public String deleteActorById(int aid) {
+		//use repo
+		ActorInfoEntity entity = actorRepo.findById(aid)
+				.orElseThrow(()->new IllegalArgumentException("Id Not foundor iNvalid id"));
+		//delete obj
+		actorRepo.deleteById(aid);
+		
+		return aid+"  :: Actor is deleted!!" ;
+	}
 }
